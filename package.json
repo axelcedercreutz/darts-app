@@ -1,9 +1,11 @@
 {
   "private": true,
+  "name": "darts-app",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "supabase:generate-types": "supabase gen types typescript --project-id xpilqsdhhkxauzbiffef  --schema public > ./types/supabase.ts"
   },
   "dependencies": {
     "@supabase/ssr": "latest",
