@@ -1,0 +1,25 @@
+{
+	"printWidth": 100,
+	"singleQuote": true,
+	"semi": true,
+	"useTabs": true,
+	"trailingComma": "all",
+	"importOrder": [
+		"^react$",
+		"",
+		"<THIRD_PARTY_MODULES>",
+		"",
+		"^(actions|reducers|selectors|services|hooks|utils|components|functions|config|types)/(.*)$",
+		"^(types|routing)$",
+		"",
+		"^[./]"
+	],
+	"importOrderParserPlugins": [
+		"typescript",
+		"jsx",
+		"['decorators', { 'decoratorsBeforeExport': true }]"
+	],
+	"importOrderSeparation": false,
+	"importOrderSortSpecifiers": true,
+	"importOrderMergeDuplicateImports": true
+}

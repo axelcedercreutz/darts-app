@@ -9,104 +9,168 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      game_participants: {
+        Row: {
+          created_at: string
+          game_id: string | null
+          id: string
+          participant_id: string
+        }
+        Insert: {
+          created_at?: string
+          game_id?: string | null
+          id?: string
+          participant_id: string
+        }
+        Update: {
+          created_at?: string
+          game_id?: string | null
+          id?: string
+          participant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "game_participants_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "game_participants_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       games: {
         Row: {
           created_at: string | null
           current_status: string
           game_mode: string
-          id: number
+          id: string
           legs_to_win: number
-          participants: number[]
           type: string
+          winner: string | null
         }
         Insert: {
           created_at?: string | null
-          current_status: string
-          game_mode: string
-          id?: number
-          legs_to_win: number
-          participants: number[]
-          type: string
+          current_status?: string
+          game_mode?: string
+          id?: string
+          legs_to_win?: number
+          type?: string
+          winner?: string | null
         }
         Update: {
           created_at?: string | null
           current_status?: string
           game_mode?: string
-          id?: number
+          id?: string
           legs_to_win?: number
-          participants?: number[]
           type?: string
+          winner?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "games_winner_fkey"
+            columns: ["winner"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       leaderboard: {
         Row: {
           games_played: number | null
           games_won: number | null
-          highest_score: number | null
-          id: number
-          user_id: number | null
+          user_id: string
         }
         Insert: {
           games_played?: number | null
           games_won?: number | null
-          highest_score?: number | null
-          id?: number
-          user_id?: number | null
+          user_id: string
         }
         Update: {
           games_played?: number | null
           games_won?: number | null
-          highest_score?: number | null
-          id?: number
-          user_id?: number | null
+          user_id?: string
         }
         Relationships: [
           {
             foreignKeyName: "leaderboard_user_id_fkey"
             columns: ["user_id"]
-            isOneToOne: false
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          full_name: string | null
+          id: string
+          updated_at: string | null
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string | null
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string | null
+          username?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
       }
-      notes: {
-        Row: {
-          id: number
-          title: string | null
-        }
-        Insert: {
-          id?: number
-          title?: string | null
-        }
-        Update: {
-          id?: number
-          title?: string | null
-        }
-        Relationships: []
-      }
       throws: {
         Row: {
           created_at: string | null
-          game_id: number | null
-          id: number
-          user_id: number | null
-          value: string
+          game_id: string
+          id: string
+          multiplier: number
+          round: number
+          sector: number
+          user_id: string
+          value: number
         }
         Insert: {
           created_at?: string | null
-          game_id?: number | null
-          id?: number
-          user_id?: number | null
-          value: string
+          game_id: string
+          id?: string
+          multiplier: number
+          round: number
+          sector: number
+          user_id: string
+          value: number
         }
         Update: {
           created_at?: string | null
-          game_id?: number | null
-          id?: number
-          user_id?: number | null
-          value?: string
+          game_id?: string
+          id?: string
+          multiplier?: number
+          round?: number
+          sector?: number
+          user_id?: string
+          value?: number
         }
         Relationships: [
           {
@@ -120,34 +184,10 @@ export type Database = {
             foreignKeyName: "throws_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "users"
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
-      }
-      users: {
-        Row: {
-          created_at: string | null
-          email: string
-          id: number
-          name: string
-          type: string
-        }
-        Insert: {
-          created_at?: string | null
-          email: string
-          id?: number
-          name: string
-          type: string
-        }
-        Update: {
-          created_at?: string | null
-          email?: string
-          id?: number
-          name?: string
-          type?: string
-        }
-        Relationships: []
       }
     }
     Views: {
