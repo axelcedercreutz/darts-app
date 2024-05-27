@@ -12,7 +12,7 @@ export default async function GamePage({ params: { id } }: { params: { id: strin
 
 	const { data: users } = await supabase
 		.from('game_participants')
-		.select('*, profiles(*)')
+		.select('*, profiles(*), legs(*, rounds(*, throws(*)))')
 		.match({ game_id: id });
 
 	const profiles = users?.map((u) => u.profiles).filter(notNull);

@@ -1,5 +1,4 @@
 import { createClient } from '@/utils/supabase/server';
-import FetchDataSteps from '@/components/tutorial/FetchDataSteps';
 import { redirect } from 'next/navigation';
 
 export default async function ProtectedPage() {
@@ -19,12 +18,6 @@ export default async function ProtectedPage() {
 				<div className="py-6 font-bold bg-purple-950 text-center">
 					This is a protected page that you can only see as an authenticated user
 				</div>
-			</div>
-			<div className="animate-in flex-1 flex flex-col gap-20 opacity-0 max-w-4xl px-3">
-				<main className="flex-1 flex flex-col gap-6">
-					<h2 className="font-bold text-4xl mb-4">Next steps</h2>
-					<FetchDataSteps />
-				</main>
 			</div>
 		</div>
 	);

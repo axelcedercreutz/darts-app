@@ -12,19 +12,19 @@ export type Database = {
       game_participants: {
         Row: {
           created_at: string
-          game_id: string | null
+          game_id: string
           id: string
           participant_id: string
         }
         Insert: {
           created_at?: string
-          game_id?: string | null
+          game_id: string
           id?: string
           participant_id: string
         }
         Update: {
           created_at?: string
-          game_id?: string | null
+          game_id?: string
           id?: string
           participant_id?: string
         }
@@ -48,32 +48,58 @@ export type Database = {
       games: {
         Row: {
           created_at: string | null
-          current_status: string
-          game_mode: string
+          current_leg: string | null
+          current_round: string | null
+          ended_at: string | null
+          game_goal: number | null
+          game_status: Database["public"]["Enums"]["game_statuses"]
           id: string
           legs_to_win: number
-          type: string
+          mode: Database["public"]["Enums"]["game_modes"]
+          type: Database["public"]["Enums"]["game_types"]
           winner: string | null
         }
         Insert: {
           created_at?: string | null
-          current_status?: string
-          game_mode?: string
+          current_leg?: string | null
+          current_round?: string | null
+          ended_at?: string | null
+          game_goal?: number | null
+          game_status?: Database["public"]["Enums"]["game_statuses"]
           id?: string
           legs_to_win?: number
-          type?: string
+          mode?: Database["public"]["Enums"]["game_modes"]
+          type?: Database["public"]["Enums"]["game_types"]
           winner?: string | null
         }
         Update: {
           created_at?: string | null
-          current_status?: string
-          game_mode?: string
+          current_leg?: string | null
+          current_round?: string | null
+          ended_at?: string | null
+          game_goal?: number | null
+          game_status?: Database["public"]["Enums"]["game_statuses"]
           id?: string
           legs_to_win?: number
-          type?: string
+          mode?: Database["public"]["Enums"]["game_modes"]
+          type?: Database["public"]["Enums"]["game_types"]
           winner?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "games_current_leg_fkey"
+            columns: ["current_leg"]
+            isOneToOne: false
+            referencedRelation: "legs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "games_current_round_fkey"
+            columns: ["current_round"]
+            isOneToOne: false
+            referencedRelation: "rounds"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "games_winner_fkey"
             columns: ["winner"]
@@ -83,27 +109,43 @@ export type Database = {
           },
         ]
       }
-      leaderboard: {
+      legs: {
         Row: {
-          games_played: number | null
-          games_won: number | null
-          user_id: string
+          created_at: string
+          ended_at: string | null
+          game_id: string
+          id: string
+          leg_number: number
+          winner: string | null
         }
         Insert: {
-          games_played?: number | null
-          games_won?: number | null
-          user_id: string
+          created_at?: string
+          ended_at?: string | null
+          game_id: string
+          id?: string
+          leg_number: number
+          winner?: string | null
         }
         Update: {
-          games_played?: number | null
-          games_won?: number | null
-          user_id?: string
+          created_at?: string
+          ended_at?: string | null
+          game_id?: string
+          id?: string
+          leg_number?: number
+          winner?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "leaderboard_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: true
+            foreignKeyName: "legs_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "legs_winner_fkey"
+            columns: ["winner"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -141,13 +183,60 @@ export type Database = {
           },
         ]
       }
+      rounds: {
+        Row: {
+          created_at: string
+          game_id: string
+          id: string
+          leg_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          game_id: string
+          id?: string
+          leg_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          game_id?: string
+          id?: string
+          leg_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rounds_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rounds_leg_id_fkey"
+            columns: ["leg_id"]
+            isOneToOne: false
+            referencedRelation: "legs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rounds_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       throws: {
         Row: {
           created_at: string | null
           game_id: string
           id: string
+          leg_id: string
           multiplier: number
-          round: number
+          round_id: string
           sector: number
           user_id: string
           value: number
@@ -156,8 +245,9 @@ export type Database = {
           created_at?: string | null
           game_id: string
           id?: string
+          leg_id: string
           multiplier: number
-          round: number
+          round_id: string
           sector: number
           user_id: string
           value: number
@@ -166,8 +256,9 @@ export type Database = {
           created_at?: string | null
           game_id?: string
           id?: string
+          leg_id?: string
           multiplier?: number
-          round?: number
+          round_id?: string
           sector?: number
           user_id?: string
           value?: number
@@ -178,6 +269,20 @@ export type Database = {
             columns: ["game_id"]
             isOneToOne: false
             referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "throws_leg_id_fkey"
+            columns: ["leg_id"]
+            isOneToOne: false
+            referencedRelation: "legs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "throws_round_id_fkey"
+            columns: ["round_id"]
+            isOneToOne: false
+            referencedRelation: "rounds"
             referencedColumns: ["id"]
           },
           {
@@ -197,7 +302,9 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      game_modes: "X01" | "AROUND_THE_CLOCK" | "1_TO_20" | "27_DOWN"
+      game_statuses: "ACTIVE" | "COMPLETED"
+      game_types: "COMPETITION" | "PRACTICE"
     }
     CompositeTypes: {
       [_ in never]: never

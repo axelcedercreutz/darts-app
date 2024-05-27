@@ -1,4 +1,4 @@
-import { GameParticipantWithProfile, Profile, Throw } from '@/types/common';
+import { Profile, Throw } from '@/types/common';
 import { toThrowString } from '@/utils/common';
 
 import { groupBy } from 'lodash';
