@@ -9,11 +9,17 @@ export default async function Account() {
 		data: { user },
 	} = await supabase.auth.getUser();
 
-	if (!user) {
+	if (!user?.email) {
 		return redirect('/login');
 	}
 
 	const { data: profile } = await supabase.from('profiles').select().eq('id', user.id).single();
 
-	return <AccountForm profile={profile} email={user.email ?? ''} />;
+	if (!profile) {
+		return redirect('/login');
+	}
+
+	console.log('Server-rendered profile:', profile);
+
+	return <AccountForm profile={profile} email={user.email} />;
 }

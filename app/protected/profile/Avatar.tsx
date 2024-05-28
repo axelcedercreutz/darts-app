@@ -53,7 +53,7 @@ export default function Avatar({
 				throw uploadError;
 			}
 
-			onUpload(`/${filePath}`);
+			onUpload(filePath);
 		} catch (error) {
 			alert('Error uploading avatar!');
 		} finally {
@@ -62,7 +62,7 @@ export default function Avatar({
 	};
 
 	return (
-		<div>
+		<>
 			{avatarUrl ? (
 				<Image
 					width={size}
@@ -91,6 +91,6 @@ export default function Avatar({
 					disabled={uploading}
 				/>
 			</div>
-		</div>
+		</>
 	);
 }
