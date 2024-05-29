@@ -52,3 +52,17 @@ export const RegisterSchema = z.object({
 	email: z.string().email(),
 	password: z.string().min(6),
 });
+
+/**
+ * Schema for validating the account update data.
+ * Most fields are nullable because they are optional and `null` is a valid value.
+ *
+ * `updated_at` is required because it should be set to the current date and time.
+ */
+export const AccountUpdateSchema = z.object({
+	id: z.string().min(1).optional(),
+	full_name: z.string().min(1).nullable(),
+	username: z.string().min(1).nullable(),
+	avatar_url: z.string().url().nullable(),
+	updated_at: z.date(),
+});
