@@ -66,3 +66,22 @@ export const AccountUpdateSchema = z.object({
 	avatar_url: z.string().url().nullable(),
 	updated_at: z.date(),
 });
+
+/**
+ * Schema for validating the throw data.
+ *
+ * - `value` is the result of the throw, which is the sector multiplied by the multiplier.
+ * - `sector` is the number on the dartboard, ranging from 1 to 20 and 25 for the bullseye.
+ * - `multiplier` is the multiplier of the sector, which can be 1, 2, or 3.
+ * - `round` is the current round of the game.
+ * - `user_id` is the ID of the user who threw the dart.
+ * - `game_id` is the ID of the game in which the throw was made.
+ */
+export const ThrowSchema = z.object({
+	value: z.number(),
+	sector: z.number().min(1).max(25),
+	multiplier: z.number().min(1).max(3),
+	round: z.number().min(1),
+	user_id: z.string().min(1),
+	game_id: z.string().min(1),
+});
