@@ -1,9 +1,11 @@
 'use client';
 import { SubmitButton } from '@/components/SubmitButton';
 import { Profile } from '@/types/common';
+import { ParticipantSchema, StartGameSchema } from '@/types/schemas';
 import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { z } from 'zod';
 
 export default function Game({
 	searchParams,
@@ -44,12 +46,24 @@ export default function Game({
 				`/game?type=${searchParams.type}&message=Please select at least one participant`,
 			);
 		}
+
+		const gameProperties = {
+			type: searchParams.type,
+			game_mode: searchParams.type === 'competitive' ? '501' : 'around_the_clock',
+		};
+		const gamePropertiesSchema = StartGameSchema.safeParse(gameProperties);
+		if (!gamePropertiesSchema.success) {
+			return router.replace(
+				`/game?type=${searchParams.type}&message=Could not start game - invalid game properties`,
+			);
+		}
+
 		const { data: game } = await supabase
 			.from('games')
 			.insert([
 				{
-					type: searchParams.type,
-					game_mode: searchParams.type === 'competitive' ? '501' : 'around_the_clock',
+					type: gameProperties.type,
+					game_mode: gameProperties.game_mode,
 				},
 			])
 			.select('*')
@@ -57,12 +71,18 @@ export default function Game({
 		if (!game) {
 			return router.replace(`/game?type=${searchParams.type}&message=Could not start game`);
 		} else {
-			await supabase.from('game_participants').insert(
-				selectedProfiles.map((profile) => ({
-					game_id: game.id,
-					participant_id: profile.id,
-				})),
-			);
+			const participants = selectedProfiles.map((profile) => ({
+				game_id: game.id,
+				participant_id: profile.id,
+			}));
+
+			const participantsSchema = z.array(ParticipantSchema).safeParse(participants);
+			if (!participantsSchema.success) {
+				return router.replace(
+					`/game/${game.id}?message=Could not start game - invalid participants`,
+				);
+			}
+			await supabase.from('game_participants').insert(participantsSchema.data);
 			return router.push(`/game/${game.id}`);
 		}
 	};
