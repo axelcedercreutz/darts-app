@@ -68,23 +68,22 @@ export default function Game({
 			])
 			.select('*')
 			.single();
+
 		if (!game) {
 			return router.replace(`/game?type=${searchParams.type}&message=Could not start game`);
-		} else {
-			const participants = selectedProfiles.map((profile) => ({
-				game_id: game.id,
-				participant_id: profile.id,
-			}));
-
-			const participantsSchema = z.array(ParticipantSchema).safeParse(participants);
-			if (!participantsSchema.success) {
-				return router.replace(
-					`/game/${game.id}?message=Could not start game - invalid participants`,
-				);
-			}
-			await supabase.from('game_participants').insert(participantsSchema.data);
-			return router.push(`/game/${game.id}`);
 		}
+
+		const participants = selectedProfiles.map((profile) => ({
+			game_id: game.id,
+			participant_id: profile.id,
+		}));
+
+		const participantsSchema = z.array(ParticipantSchema).safeParse(participants);
+		if (!participantsSchema.success) {
+			return router.replace(`/game/${game.id}?message=Could not start game - invalid participants`);
+		}
+		await supabase.from('game_participants').insert(participantsSchema.data);
+		return router.push(`/game/${game.id}`);
 	};
 
 	return (
