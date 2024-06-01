@@ -1,4 +1,3 @@
-import { createClient } from '@/utils/supabase/server';
 import AuthButton from './AuthButton';
 import StartGameButton from './StartGameButton';
 
