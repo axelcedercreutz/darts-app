@@ -9,8 +9,8 @@
 		"",
 		"<THIRD_PARTY_MODULES>",
 		"",
-		"^(actions|reducers|selectors|services|hooks|utils|components|functions|config|types)/(.*)$",
-		"^(types|routing)$",
+		"^(supabase|services|hooks|utils|components|config|types)/(.*)$",
+		"^(types|api)$",
 		"",
 		"^[./]"
 	],

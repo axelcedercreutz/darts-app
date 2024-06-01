@@ -1,0 +1,72 @@
+name: unit-tests
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-nodev4
+        with:
+          node-version: '18.17'
+
+      - uses: actions/cache/restore@v4
+        name: Check if npm cache from development can be reused
+        id: npm-dev-cache
+        with:
+          path: |
+            **/node_modules
+          key: npm-development-${{ hashFiles('**/package-lock.json') }}
+          lookup-only: true
+
+      - uses: actions/cache/restore@v4
+        name: Mount existing npm cache
+        id: npm-cache
+        with:
+          path: |
+            **/node_modules
+          key: npm-${{ github.ref_name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-development-${{ hashFiles('**/package-lock.json') }}
+
+  lint:
+    runs-on: ubuntu-20.04
+    needs: setup
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            **/node_modules
+          key: npm-${{ github.ref_name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-development-${{ hashFiles('**/package-lock.json') }}
+        name: npm install
+      - run: npm install --frozen-lockfile
+
+        name: Run linter
+      - run: npm run lint
+
+  tsc:
+    runs-on: ubuntu-20.04
+    needs: setup
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            **/node_modules
+          key: npm-${{ github.ref_name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-development-${{ hashFiles('**/package-lock.json') }}
+
+        name: npm install
+      - run: npm install --frozen-lockfile
+
+        name: Run tsc
+      - run: npm run tsc
