@@ -6,7 +6,8 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
-		"supabase:generate-types": "supabase gen types typescript --project-id xpilqsdhhkxauzbiffef  --schema public > ./types/supabase.ts"
+		"supabase:generate-types": "supabase gen types typescript --project-id xpilqsdhhkxauzbiffef  --schema public > ./types/supabase.ts",
+		"prettier": "prettier --write ."
 	},
 	"dependencies": {
 		"@headlessui/react": "^2.0.4",
