@@ -6,6 +6,7 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
+		"tsc": "tsc",
 		"supabase:generate-types": "supabase gen types typescript --project-id xpilqsdhhkxauzbiffef  --schema public > ./types/supabase.ts",
 		"prettier": "prettier --write ."
 	},
