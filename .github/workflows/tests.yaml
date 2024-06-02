@@ -1,0 +1,92 @@
+name: lint-and-tsc
+on:
+  workflow_call:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event.pull_request.number && true || false }}
+
+jobs:
+  setup:
+    runs-on: ubuntu-20.04
+    if: github.event.pull_request.draft == false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18.15'
+
+      - uses: actions/cache/restore@v4
+        name: Check if npm cache from development can be reused
+        id: npm-dev-cache
+        with:
+          path: |
+            **/node_modules
+          key: npm-development-${{ hashFiles('**/package-lock.json') }}
+          lookup-only: true
+
+      - uses: actions/cache/restore@v4
+        name: Mount existing npm cache
+        id: npm-cache
+        with:
+          path: |
+            **/node_modules
+          key: npm-${{ github.ref_name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-development-${{ hashFiles('**/package-lock.json') }}
+
+      - name: install, build
+        run: |
+          npm ci
+
+      - uses: actions/cache/save@v4
+        if: steps.npm-dev-cache.outputs.cache-hit != 'true' && steps.npm-cache.outputs.cache-hit != 'true' && always()
+        with:
+          path: |
+            **/node_modules
+          key: npm-${{ github.ref_name }}-${{ hashFiles('**/package-lock.json') }}
+
+  lint:
+    runs-on: ubuntu-20.04
+    needs: setup
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            **/node_modules
+          key: npm-${{ github.ref_name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-development-${{ hashFiles('**/package-lock.json') }}
+
+      - name: npm install
+        run: npm ci
+
+      - name: Run linter
+        run: npm run lint
+
+  tsc:
+    runs-on: ubuntu-20.04
+    needs: setup
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            **/node_modules
+          key: npm-${{ github.ref_name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-development-${{ hashFiles('**/package-lock.json') }}
+
+      - name: npm install
+        run: npm ci
+
+      - name: Run tsc
+        run: npm run tsc
+        env:
+          NODE_OPTIONS: --max_old_space_size=6144

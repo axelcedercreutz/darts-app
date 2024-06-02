@@ -19,7 +19,5 @@ export default async function Account() {
 		return redirect('/login');
 	}
 
-	console.log('Server-rendered profile:', profile);
-
 	return <AccountForm profile={profile} email={user.email} />;
 }

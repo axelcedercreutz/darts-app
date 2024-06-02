@@ -7,7 +7,7 @@ export default function Avatar({
 	uid,
 	url,
 	size,
-	onUpload,
+	onUpload
 }: {
 	uid: string | null;
 	url: string | null;
@@ -29,6 +29,7 @@ export default function Avatar({
 				const url = URL.createObjectURL(data);
 				setAvatarUrl(url);
 			} catch (error) {
+				// eslint-disable-next-line no-console
 				console.log('Error downloading image: ', error);
 			}
 		}

@@ -55,4 +55,3 @@ If you also want to run Supabase locally, check out [the docs for Local Developm
 ## Feedback and issues
 
 Please file feedback and issues over on the [GitHub repo](https://github.com/axelcedercreutz/darts-app/issues/new).
-

@@ -6,7 +6,9 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
-		"supabase:generate-types": "supabase gen types typescript --project-id xpilqsdhhkxauzbiffef  --schema public > ./types/supabase.ts"
+		"tsc": "tsc",
+		"supabase:generate-types": "supabase gen types typescript --project-id xpilqsdhhkxauzbiffef  --schema public > ./types/supabase.ts",
+		"prettier": "prettier --write ."
 	},
 	"dependencies": {
 		"@headlessui/react": "^2.0.4",
@@ -32,6 +34,8 @@
 		"@types/react-dom": "18.2.18",
 		"encoding": "^0.1.13",
 		"eslint": "8.57.0",
-		"eslint-config-next": "14.2.3"
+		"eslint-config-next": "14.2.3",
+		"eslint-config-prettier": "^7.0.1",
+		"eslint-plugin-unused-imports": "^2.0.0"
 	}
 }

@@ -54,7 +54,6 @@ const ThrowSelector = ({
 		setCurrentThrow({ number: 1, multiplier: 1 });
 		setCurrentRound((prev) => (throws.length % 3 === 0 ? prev + 1 : prev));
 	};
-
 	return (
 		<form onSubmit={handleSubmit} className="mb-4">
 			<div className="mb-2">
