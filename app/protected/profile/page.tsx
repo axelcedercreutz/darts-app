@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import AccountForm from './AccountForm';
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/supabase/client/server';
 
 export default async function Account() {
 	const supabase = createClient();

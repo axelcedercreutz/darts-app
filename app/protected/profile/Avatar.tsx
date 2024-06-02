@@ -1,13 +1,13 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/supabase/client/client';
 import Image from 'next/image';
 
 export default function Avatar({
 	uid,
 	url,
 	size,
-	onUpload
+	onUpload,
 }: {
 	uid: string | null;
 	url: string | null;

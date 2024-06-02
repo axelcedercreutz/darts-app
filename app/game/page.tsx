@@ -2,7 +2,7 @@
 import { SubmitButton } from '@/components/SubmitButton';
 import { Profile } from '@/types/common';
 import { ParticipantSchema, StartGameSchema } from '@/types/schemas';
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/supabase/client/client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { z } from 'zod';

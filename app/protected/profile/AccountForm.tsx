@@ -1,6 +1,6 @@
 'use client';
-import {  useState } from 'react';
-import { createClient } from '@/utils/supabase/client';
+import { useState } from 'react';
+import { createClient } from '@/supabase/client/client';
 import { Profile } from '@/types/common';
 import Avatar from './Avatar';
 import { AccountUpdateSchema } from '@/types/schemas';

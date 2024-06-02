@@ -1,7 +1,7 @@
 'use client';
 import { Throw } from '@/types/common';
 import { ThrowSchema } from '@/types/schemas';
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/supabase/client/client';
 import { useState } from 'react';
 
 const ThrowSelector = ({

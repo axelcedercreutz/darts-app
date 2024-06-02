@@ -1,6 +1,6 @@
 import { SubmitButton } from '@/components/SubmitButton';
 import { LoginSchema, RegisterSchema } from '@/types/schemas';
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/supabase/client/server';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 

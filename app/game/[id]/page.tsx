@@ -1,5 +1,5 @@
 import { groupBy } from 'lodash';
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/supabase/client/server';
 
 import GameSelectors from './GameSelectors';
 import { notNull } from '@/utils/common';
