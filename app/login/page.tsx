@@ -1,9 +1,5 @@
-<<<<<<< zod-validation
 import { SubmitButton } from '@/components/SubmitButton';
 import { LoginSchema, RegisterSchema } from '@/types/schemas';
-=======
-import { headers } from 'next/headers';
->>>>>>> main
 import { createClient } from '@/utils/supabase/server';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
