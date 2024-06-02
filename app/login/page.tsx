@@ -1,7 +1,8 @@
-import { headers } from 'next/headers';
-import { createClient } from '@/utils/supabase/server';
-import { redirect } from 'next/navigation';
 import { SubmitButton } from '@/components/SubmitButton';
+import { LoginSchema, RegisterSchema } from '@/types/schemas';
+import { createClient } from '@/utils/supabase/server';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 export default function Login({ searchParams }: { searchParams: { message: string } }) {
 	const signIn = async (formData: FormData) => {
@@ -9,6 +10,11 @@ export default function Login({ searchParams }: { searchParams: { message: strin
 
 		const email = formData.get('email') as string;
 		const password = formData.get('password') as string;
+		const loginSchema = LoginSchema.safeParse({ email, password });
+		if (!loginSchema.success) {
+			return redirect('/login?message=Invalid email or password');
+		}
+
 		const supabase = createClient();
 		const { error } = await supabase.auth.signInWithPassword({
 			email,
@@ -28,6 +34,11 @@ export default function Login({ searchParams }: { searchParams: { message: strin
 		const origin = headers().get('origin');
 		const email = formData.get('email') as string;
 		const password = formData.get('password') as string;
+		const registerSchema = RegisterSchema.safeParse({ email, password });
+		if (!registerSchema.success) {
+			return redirect('/login?message=Invalid email or password');
+		}
+
 		const supabase = createClient();
 
 		const { error } = await supabase.auth.signUp({

@@ -1,5 +1,6 @@
 'use client';
 import { Throw } from '@/types/common';
+import { ThrowSchema } from '@/types/schemas';
 import { createClient } from '@/utils/supabase/client';
 import { useState } from 'react';
 
@@ -32,24 +33,27 @@ const ThrowSelector = ({
 
 	const handleSubmit = async (e: any) => {
 		e.preventDefault();
+		const throwData = {
+			value: currentThrow.number * currentThrow.multiplier,
+			sector: currentThrow.number,
+			multiplier: currentThrow.multiplier,
+			round: currentRound,
+			user_id: userId,
+			game_id: gameId,
+		};
+		const throwSchema = ThrowSchema.safeParse(throwData);
+		if (!throwSchema.success) {
+			throw new Error('Invalid throw data');
+		}
+
 		const { data: addedThrow } = await supabase
 			.from('throws')
-			.insert([
-				{
-					value: currentThrow.number * currentThrow.multiplier,
-					sector: currentThrow.number,
-					multiplier: currentThrow.multiplier,
-					round: currentRound,
-					user_id: userId,
-					game_id: gameId,
-				},
-			])
+			.insert([throwSchema.data])
 			.select('*')
 			.single();
 		setCurrentThrow({ number: 1, multiplier: 1 });
 		setCurrentRound((prev) => (throws.length % 3 === 0 ? prev + 1 : prev));
 	};
-
 	return (
 		<form onSubmit={handleSubmit} className="mb-4">
 			<div className="mb-2">

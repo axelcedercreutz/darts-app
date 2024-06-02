@@ -3,6 +3,7 @@ import {  useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import { Profile } from '@/types/common';
 import Avatar from './Avatar';
+import { AccountUpdateSchema } from '@/types/schemas';
 
 export default function AccountForm({
 	profile,
@@ -28,12 +29,22 @@ export default function AccountForm({
 		try {
 			if (!profile) throw new Error('Profile not found');
 			setLoading(true);
-			const { error } = await supabase.from('profiles').upsert({
+
+			const upsertData = {
 				id: profile?.id,
 				full_name: fullname,
 				username,
 				avatar_url,
-				updated_at: new Date().toISOString(),
+				updated_at: new Date(),
+			};
+			const updateSchema = AccountUpdateSchema.safeParse(upsertData);
+			if (!updateSchema.success) {
+				throw new Error('Invalid update data');
+			}
+
+			const { error } = await supabase.from('profiles').upsert({
+				...upsertData,
+				updated_at: upsertData.updated_at.toISOString(),
 			});
 			if (error) throw error;
 			alert('Profile updated!');
