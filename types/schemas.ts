@@ -1,9 +1,8 @@
+import { GameTypes,GameModes } from '@/supabase/types/enums';
 import { z } from 'zod';
 
-const GameTypeSchemaType = z.union([z.literal('competitive'), z.literal('practice')]);
-export type GameType = z.infer<typeof GameModeSchemaType>;
-const GameModeSchemaType = z.union([z.literal('501'), z.literal('around_the_clock')]);
-export type GameModes = z.infer<typeof GameModeSchemaType>;
+const GameTypeSchemaType = z.enum([GameTypes.COMPETITION, GameTypes.PRACTICE]);
+const GameModeSchemaType = z.enum([GameModes['1_TO_20'], GameModes['27_DOWN'], GameModes.AROUND_THE_CLOCK, GameModes.X01]);
 
 /**
  * Represents the schema for validating the
@@ -19,7 +18,7 @@ export const StartGameSchema = z.object({
  * To validate a list of participants, use `z.array(ParticipantSchema)`.
  */
 export const ParticipantSchema = z.object({
-	profile_id: z.string().min(1),
+	participant_id: z.string().min(1),
 	game_id: z.string().min(1),
 });
 
@@ -68,6 +67,28 @@ export const AccountUpdateSchema = z.object({
 });
 
 /**
+ * Schema for validating the leg data.
+ * The `leg_number` should be at least 1.
+ * The `game_id` is the ID of the game to which the leg belongs.
+ */
+export const LegSchema = z.object({
+	game_id: z.string().min(1),
+	leg_number: z.number().min(1),
+});
+
+/**
+ * Schema for validating the round data.
+ * The `round_number` should be at least 1.
+ * The `leg_id` is the ID of the leg to which the round belongs.
+ */
+export const RoundSchema = z.object({
+	game_id: z.string().min(1),
+	user_id: z.string().min(1),
+	leg_id: z.string().min(1),
+	round_number: z.number().min(1),
+});
+
+/**
  * Schema for validating the throw data.
  *
  * - `value` is the result of the throw, which is the sector multiplied by the multiplier.
@@ -84,4 +105,6 @@ export const ThrowSchema = z.object({
 	round: z.number().min(1),
 	user_id: z.string().min(1),
 	game_id: z.string().min(1),
+	leg_id: z.string().min(1),
+	round_id: z.string().min(1),
 });

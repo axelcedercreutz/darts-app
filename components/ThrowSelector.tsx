@@ -1,6 +1,6 @@
 'use client';
 import { Throw } from '@/types/common';
-import { ThrowSchema } from '@/types/schemas';
+import { LegSchema, RoundSchema, ThrowSchema } from '@/types/schemas';
 import { createClient } from '@/supabase/client/client';
 import { useState } from 'react';
 
@@ -33,18 +33,65 @@ const ThrowSelector = ({
 
 	const handleSubmit = async (e: any) => {
 		e.preventDefault();
-		const throwData = {
-			value: currentThrow.number * currentThrow.multiplier,
-			sector: currentThrow.number,
-			multiplier: currentThrow.multiplier,
-			round: currentRound,
-			user_id: userId,
+
+		const legData = {
 			game_id: gameId,
+			leg_number: Math.ceil(throws.length / 3) + 1,
 		};
-		const throwSchema = ThrowSchema.safeParse(throwData);
-		if (!throwSchema.success) {
-			throw new Error('Invalid throw data');
+
+		const legShema = LegSchema.safeParse(legData);
+
+		if(!legShema.success) {
+			throw new Error('Invalid leg data');
 		}
+
+		const { data: addedLeg} = await supabase
+			.from('legs')
+			.insert([legData])
+			.select('*')
+			.single();
+
+		if(!addedLeg) {
+			throw new Error('Failed to add leg');
+		}
+
+		const roundData = {
+			game_id: gameId,
+			user_id: userId,
+			leg_id: addedLeg.id,
+			round_number: currentRound,
+		};
+
+		const roundSchema = RoundSchema.safeParse(roundData);
+
+		if(!roundSchema.success) {
+			throw new Error('Invalid round data');
+		}
+
+		const { data: addedRound} = await supabase
+			.from('rounds')
+			.insert([roundData])
+			.select('*')
+			.single();
+	
+		if(!addedRound) {
+			throw new Error('Failed to add round');
+		}
+
+			const throwData = {
+				value: currentThrow.number * currentThrow.multiplier,
+				sector: currentThrow.number,
+				multiplier: currentThrow.multiplier,
+				round: currentRound,
+				user_id: userId,
+				game_id: gameId,
+				leg_id: addedLeg.id,
+				round_id: addedRound.id,
+			};
+			const throwSchema = ThrowSchema.safeParse(throwData);
+			if (!throwSchema.success) {
+				throw new Error('Invalid throw data');
+			}
 
 		const { data: addedThrow } = await supabase
 			.from('throws')

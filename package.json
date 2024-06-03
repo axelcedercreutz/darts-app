@@ -2,6 +2,7 @@
 	"name": "darts-app",
 	"version": "1.0.0",
 	"private": true,
+	"type": "module",
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
@@ -9,6 +10,7 @@
 		"lint": "next lint",
 		"tsc": "tsc",
 		"supabase:generate-types": "supabase gen types typescript --project-id xpilqsdhhkxauzbiffef  --schema public > ./supabase/db.ts",
+		"supabase:generate-enums": "node ./scripts/generate-supabase-enums.js",
 		"prettier": "prettier --write ."
 	},
 	"dependencies": {

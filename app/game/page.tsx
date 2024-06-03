@@ -1,6 +1,6 @@
 'use client';
 import { SubmitButton } from '@/components/SubmitButton';
-import { Profile } from '@/types/common';
+import { GameMode, GameType, Profile } from '@/types/common';
 import { ParticipantSchema, StartGameSchema } from '@/types/schemas';
 import { createClient } from '@/supabase/client/client';
 import { useRouter } from 'next/navigation';
@@ -25,7 +25,7 @@ export default function Game({
 			} = await supabase.auth.getUser();
 			if (user) {
 				const findUser = profiles?.find((profile) => profile.id === user.id);
-				setSelectedProfiles([findUser]);
+				if (findUser) setSelectedProfiles([findUser]);
 			}
 			setRemoteProfiles(profiles ?? []);
 		};
@@ -62,8 +62,8 @@ export default function Game({
 			.from('games')
 			.insert([
 				{
-					type: gameProperties.type,
-					game_mode: gameProperties.game_mode,
+					type: gameProperties.type as GameType,
+					game_mode: gameProperties.game_mode as GameMode,
 				},
 			])
 			.select('*')

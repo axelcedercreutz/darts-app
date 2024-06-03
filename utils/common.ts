@@ -2,6 +2,11 @@ export const notNull = <T>(value: T | null): value is T => {
 	return value !== null;
 };
 
+// Utility function to get the values of an enum
+export const getEnumValues = <T extends Record<string, string>>(enumObj: T): T[keyof T][] => {
+	return Object.values(enumObj) as (T[keyof T])[];
+  }
+
 export const toThrowString = ({
 	sector,
 	multiplier,
