@@ -4,6 +4,7 @@ import { createClient } from '@/supabase/client/client';
 import { Profile } from '@/types/common';
 import Avatar from './Avatar';
 import { AccountUpdateSchema } from '@/types/schemas';
+import { SubmitButton } from '@/components/SubmitButton';
 
 export default function AccountForm({
 	profile,
@@ -13,7 +14,7 @@ export default function AccountForm({
 	email: string;
 }) {
 	const supabase = createClient();
-	const [loading, setLoading] = useState(true);
+	const [loading, setLoading] = useState(false);
 	const [fullname, setFullname] = useState<string | null>(profile?.full_name || null);
 	const [username, setUsername] = useState<string | null>(profile?.username || null);
 	const [avatar_url, setAvatarUrl] = useState<string | null>(profile?.avatar_url || null);
@@ -42,12 +43,10 @@ export default function AccountForm({
 				throw new Error('Invalid update data');
 			}
 
-			const { error } = await supabase.from('profiles').upsert({
+			await supabase.from('profiles').upsert({
 				...upsertData,
 				updated_at: upsertData.updated_at.toISOString(),
 			});
-			if (error) throw error;
-			alert('Profile updated!');
 		} catch (error) {
 			alert('Error updating the data!');
 		} finally {
@@ -88,16 +87,11 @@ export default function AccountForm({
 					onChange={(e) => setUsername(e.target.value)}
 				/>
 			</div>
-
-			<div>
-				<button
-					className="button primary block"
-					onClick={() => updateProfile({ fullname, username, avatar_url })}
-					disabled={loading}
-				>
-					{loading ? 'Loading ...' : 'Update'}
-				</button>
-			</div>
+				<SubmitButton formAction={() => updateProfile({ fullname, username, avatar_url })}
+					className="bg-green-700 rounded-md px-4 py-2 text-foreground my-2"
+					pendingText="Signing In...">
+						Update Profile
+				</SubmitButton>
 		</form>
 	);
 }
